@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @SuperBuilder
 @Entity
-public class user extends BaseEntity {
+public class User extends BaseEntity {
     private String firstname;
     private String lastname;
     private LocalDate dateOfBirth;

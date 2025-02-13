@@ -1,8 +1,8 @@
-package com.flairstech_education.course;
+package com.flairstech_education.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CourseRepository extends JpaRepository<Course,Integer> {
+public interface UserRepository extends JpaRepository<User,Integer> {
 }

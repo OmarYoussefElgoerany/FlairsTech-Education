@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Setter
 @SuperBuilder
 @Entity
-public class course extends BaseEntity {
+public class Course extends BaseEntity {
     private String title;
     private String description;
     private String instructor;
