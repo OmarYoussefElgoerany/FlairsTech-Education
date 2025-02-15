@@ -13,4 +13,5 @@ public class CourseResponse {
     private String instructor;
     private int duration;
     private String category;
+    private String createdBy;
 }
