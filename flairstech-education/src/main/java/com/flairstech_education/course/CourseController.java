@@ -1,6 +1,7 @@
 package com.flairstech_education.course;
 
 import com.flairstech_education.common.GenericResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,14 +32,14 @@ public class CourseController {
         }
     }
     @PostMapping
-    public ResponseEntity<GenericResponse<Integer>> create(@RequestBody CourseRequest courseRequest) {
+    public ResponseEntity<GenericResponse<Integer>> create(@RequestBody  @Valid CourseRequest courseRequest) {
         int courseId = courseService.create(courseRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(GenericResponse.success(courseId));
     }
 
     @PutMapping()
     public ResponseEntity<GenericResponse<Integer>> update(
-            @RequestBody CourseRequest courseRequest) {
+            @RequestBody  @Valid CourseRequest courseRequest) {
         int updatedCourseId = courseService.update(courseRequest);
         return ResponseEntity.ok(GenericResponse.response(updatedCourseId,
                 "updated!",true));

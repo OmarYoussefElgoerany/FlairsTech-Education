@@ -1,6 +1,7 @@
 package com.flairstech_education.user;
 
 import com.flairstech_education.common.GenericResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<GenericResponse<Integer>> create(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<GenericResponse<Integer>> create(@RequestBody @Valid UserRequest userRequest) {
         int userId = userService.create(userRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(GenericResponse.success(userId));
     }
 
     @PutMapping()
-    public ResponseEntity<GenericResponse<UserRequest>> update(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<GenericResponse<UserRequest>> update(@RequestBody  @Valid UserRequest userRequest) {
         int updatedUserId = userService.update(userRequest);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(GenericResponse.response(userRequest, "Updated", true));
