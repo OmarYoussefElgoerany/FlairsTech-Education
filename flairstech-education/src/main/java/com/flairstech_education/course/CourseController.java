@@ -1,6 +1,7 @@
 package com.flairstech_education.course;
 
 import com.flairstech_education.common.GenericResponse;
+import com.flairstech_education.common.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,10 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<CourseResponse>> getAll(){
-        return ResponseEntity.ok(courseService.getAll());
-    }
+//    @GetMapping()
+//    public ResponseEntity<List<CourseResponse>> getAll(){
+//        return ResponseEntity.ok(courseService.getAll());
+//    }
     @GetMapping("/{id}")
     public ResponseEntity<GenericResponse<CourseResponse>> getById(@PathVariable("id") Integer id) {
             CourseResponse courseResponse = courseService.getById(id);
@@ -30,6 +31,15 @@ public class CourseController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(GenericResponse.error());
         }
+    }
+    //Pagination
+    @GetMapping()
+    public ResponseEntity<PageResponse<CourseResponse>> getAll(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "size", defaultValue = "10") Integer size
+    ) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(courseService.getAll(page,size));
     }
     @PostMapping
     public ResponseEntity<GenericResponse<Integer>> create(@RequestBody  @Valid CourseRequest courseRequest) {

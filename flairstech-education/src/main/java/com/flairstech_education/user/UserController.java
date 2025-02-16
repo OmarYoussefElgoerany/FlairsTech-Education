@@ -1,6 +1,7 @@
 package com.flairstech_education.user;
 
 import com.flairstech_education.common.GenericResponse;
+import com.flairstech_education.common.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,16 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+//    @GetMapping
+//    public ResponseEntity<List<UserResponse>> getAll() {
+//        return ResponseEntity.ok(userService.getAll());
+//    }
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getAll() {
-        return ResponseEntity.ok(userService.getAll());
+    public ResponseEntity<PageResponse<UserResponse>> getAll(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size
+    ) {
+        return ResponseEntity.ok(userService.getAll(page,size));
     }
 
     @GetMapping("/{id}")

@@ -1,8 +1,14 @@
 package com.flairstech_education.course;
 
+import com.flairstech_education.common.PageResponse;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,11 +22,36 @@ public class CourseService {
         this.courseMapper = courseMapper;
     }
 
-    public List<CourseResponse> getAll(){
-        return courseRepository.findAll()
-                .stream().map(courseMapper::toCourseResponse)
+//    //PAGINATION
+//    public List<CourseResponse> getAll(){
+//       return courseRepository.findAll().stream().map(courseMapper::toCourseResponse).toList();
+//    }
+    //PAGINATION
+    public PageResponse<CourseResponse> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Page<Course> pg = courseRepository.findAll(pageable);
+        List<CourseResponse> courseRespList = pg.stream().map(courseMapper::toCourseResponse)
                 .toList();
+        return PageResponse.<CourseResponse>builder()
+                .content(courseRespList)
+                .number(pg.getNumber())
+                .size(pg.getSize())
+                .totalElements(pg.getTotalElements())
+                .totalPages(pg.getTotalPages())
+                .first(pg.isFirst())
+                .last(pg.isLast())
+                .build();
+//        return new PageResponse<>(
+//                courseList,
+//                pg.getNumber(),
+//                pg.getSize(),
+//                pg.getTotalElements(),
+//                pg.getTotalPages(),
+//                pg.isFirst(),
+//                pg.isLast()
+//        );
     }
+
 
     public CourseResponse getById(Integer id){
         return courseRepository.findById(id)
