@@ -1,6 +1,7 @@
 package com.flairstech_education.course;
 
 import com.flairstech_education.common.PageResponse;
+import com.flairstech_education.file.FileStorageService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +23,6 @@ public class CourseService {
         this.courseMapper = courseMapper;
     }
 
-//    //PAGINATION
 //    public List<CourseResponse> getAll(){
 //       return courseRepository.findAll().stream().map(courseMapper::toCourseResponse).toList();
 //    }
@@ -70,6 +70,18 @@ public class CourseService {
 
         var course = courseMapper.AddUpdatedCourseToCourse(courseRequest,getCourse);
         return courseRepository.save(course).getId();
+    }
+    public int patch(UpdateCourseRequest courseRequest){
+        var id = courseRequest.id;
+        Course getCourse = courseRepository.findById(id).orElseThrow(
+                () ->  new EntityNotFoundException("Course not found with id: " + id)
+        );
+        getCourse.setPhoto(courseRequest.photo);
+         var x = courseRepository.save(getCourse).getId();
+        Course getCourse2 = courseRepository.findById(id).orElseThrow(
+                () ->  new EntityNotFoundException("Course not found with id: " + id)
+        );
+         return  x;
     }
     public void delete(Integer id) {
         if (!courseRepository.existsById(id)) {

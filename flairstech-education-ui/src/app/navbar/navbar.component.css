@@ -1,0 +1,4 @@
+.router-link-active {
+  color: blue;
+  font-weight: bold;
+}

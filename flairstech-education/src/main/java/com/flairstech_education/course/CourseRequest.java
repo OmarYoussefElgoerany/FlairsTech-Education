@@ -1,8 +1,6 @@
 package com.flairstech_education.course;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
@@ -20,11 +18,13 @@ public record CourseRequest(
         @NotNull(message = "instructor cannot be null")
         @NotEmpty(message = "instructor Cannot be empty")
         String instructor,
-        @Length(min = 5, max = 120)
+        @Min(value = 1, message = "Duration must be at least 1")
+        @Max(value = 120, message = "Duration cannot exceed 120")
         int duration,
         LocalDate startDate,
         LocalDate endDate,
         String category,
+        String photo,
         int capacity,
         String createdBy
 ) {

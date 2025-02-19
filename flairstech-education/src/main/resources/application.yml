@@ -13,10 +13,17 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
+  servlet:
+    multipart:
+      max-file-size: 50MB
 springdoc:
   default-produces-media-type: application/json
-
+application:
+  file:
+    uploads:
+      photos-output-path: ./uploads
 server:
   servlet:
     context-path: /api/v1/
+
+

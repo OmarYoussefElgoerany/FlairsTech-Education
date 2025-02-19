@@ -1,0 +1,16 @@
+.img-card {
+  height: 250px;
+}
+
+.construct {
+  width: 75%;
+  margin: 0 auto; /* Horizontally center the element */
+  display: flex;
+  justify-content: center;
+}
+
+.btnCard {
+  width: 40%;
+  text-align: center;
+  height: 60%;
+}

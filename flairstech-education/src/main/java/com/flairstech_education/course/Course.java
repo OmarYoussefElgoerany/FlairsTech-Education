@@ -29,6 +29,8 @@ public class Course extends BaseEntity {
     private LocalDate endDate;
     private String category;
     private int capacity;
+    private String photo;
+
     @ManyToMany(mappedBy = "courses") // Non-owning side
     private Set<User> users = new HashSet<>();
 }

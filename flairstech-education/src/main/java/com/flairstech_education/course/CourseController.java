@@ -46,7 +46,7 @@ public class CourseController {
         int courseId = courseService.create(courseRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(GenericResponse.success(courseId));
     }
-
+    
     @PutMapping()
     public ResponseEntity<GenericResponse<Integer>> update(
             @RequestBody  @Valid CourseRequest courseRequest) {

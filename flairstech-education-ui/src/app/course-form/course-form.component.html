@@ -1,0 +1,77 @@
+<div class="m-5">
+  <h2>{{ isEditMode ? "Edit Course" : "Add Course" }}</h2>
+
+  <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input type="text" class="form-control" formControlName="title" />
+
+      @if (title?.invalid && title?.touched) {
+      <p class="text-danger">
+        @if (title?.errors?.['required']) { Title is required. } @if
+        (title?.errors?.['minlength']) { Must be at least
+        {{ title?.errors?.['minlength']?.['requiredLength'] }} characters but
+        entered {{ title?.errors?.['minlength']?.['actualLength'] }}. } @if
+        (title?.errors?.['maxlength']) { Maximum allowed characters are
+        {{ title?.errors?.['maxlength']?.['requiredLength'] }}. }
+      </p>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" formControlName="description"></textarea>
+      @if (description?.invalid && description?.touched) {
+      <p class="text-danger">
+        @if (description?.errors?.['required']) { description is required. } @if
+        (description?.errors?.['minlength']) { Must be at least
+        {{ description?.errors?.['minlength']?.['requiredLength'] }} characters
+        but entered {{ description?.errors?.['minlength']?.['actualLength'] }}.
+        } @if (description?.errors?.['maxlength']) { Maximum allowed characters
+        are {{ description?.errors?.['maxlength']?.['requiredLength'] }}. }
+      </p>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Instructor</label>
+      <input type="text" class="form-control" formControlName="instructor" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Category</label>
+      <input type="text" class="form-control" formControlName="category" />
+      @if (category?.touched) {
+      <p class="text-danger">
+        @if (category?.errors?.['required']) { Category is required. }
+      </p>
+      }
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Created By</label>
+      <input type="text" class="form-control" formControlName="createdBy" />
+      @if (createdBy?.touched) {
+      <p class="text-danger">
+        @if (createdBy?.errors?.['required']) { Created by is required. }
+      </p>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Duration (hours)</label>
+      <input type="number" class="form-control" formControlName="duration" />
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <button
+        type="submit"
+        [disabled]="courseForm.invalid"
+        class="btn btn-primary"
+      >
+        {{ isEditMode ? "Update Course" : "Add Course" }}
+      </button>
+    </div>
+  </form>
+
+  <pre>{{ courseForm.value | json }}</pre>
+</div>

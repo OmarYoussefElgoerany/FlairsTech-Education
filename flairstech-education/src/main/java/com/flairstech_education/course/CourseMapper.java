@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 public class CourseMapper {
     public CourseResponse toCourseResponse(Course course){
         return CourseResponse.builder()
+                .id(course.getId())
                 .title(course.getTitle())
                 .description(course.getDescription())
                 .instructor(course.getInstructor())
+                .photo(course.getPhoto())
                 .duration(course.getDuration())
                 .category(course.getCategory())
                 .createdBy(course.getCreatedBy())
@@ -19,6 +21,7 @@ public class CourseMapper {
         return Course.builder()
                 .category(courseRequest.category())
                 .id(courseRequest.id())
+                .description(courseRequest.description())
                 .duration(courseRequest.duration())
                 .title(courseRequest.title())
                 .startDate(courseRequest.startDate())
