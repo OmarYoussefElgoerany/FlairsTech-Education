@@ -1,7 +1,6 @@
 package com.flairstech_education.course;
 
 import com.flairstech_education.common.PageResponse;
-import com.flairstech_education.file.FileStorageService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,9 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,6 +50,7 @@ public class CourseService {
     }
 
 
+
     public CourseResponse getById(Integer id){
         return courseRepository.findById(id)
                 .map(courseMapper::toCourseResponse)
@@ -89,5 +87,15 @@ public class CourseService {
         }
         courseRepository.deleteById(id);
     }
+    public List<CourseResponse> searchByTitle(String title) {
+        List<Course> courses = this.courseRepository.findByTitleContainingIgnoreCase(title);
 
+        if (courses.isEmpty()) {
+            throw new EntityNotFoundException("Course with title " + title + " is not found");
+        }
+
+        return courses.stream()
+                .map(courseMapper::toCourseResponse)
+                .collect(Collectors.toList());
+    }
 }

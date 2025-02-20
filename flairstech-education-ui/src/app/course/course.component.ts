@@ -27,7 +27,7 @@ export class CourseComponent implements OnInit, OnChanges {
   totalPages: number = 2; // total pages
   totalCourses!: number;
   courseId!: number;
-  searching!: string;
+  searchingVal!: string;
   constructor(private courseService: CourseService, private router: Router) {}
   ngOnChanges(changes: SimpleChanges): void {
     this.courses.filter((course) => this.courseId != course.id);
@@ -37,10 +37,13 @@ export class CourseComponent implements OnInit, OnChanges {
     this.fetchCourses();
   }
   search() {
-    console.log(this.searching);
-    this.courses = this.courses.filter(
-      (course) => course.title == this.searching
-    );
+    console.log(this.searchingVal);
+    this.courseService.getByTitle(this.searchingVal).subscribe({
+      next: (resp) => {
+        this.courses = resp.data;
+      },
+      error: (err) => console.error(`Error Message : ` + err.message``),
+    });
   }
 
   fetchCourses(): void {

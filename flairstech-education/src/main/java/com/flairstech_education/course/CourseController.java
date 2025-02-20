@@ -62,4 +62,11 @@ public class CourseController {
                 GenericResponse.response(id,"Deleted", true)
         ); // Returning null as there's no data
     }
+    @GetMapping("/search/{title}")
+    public ResponseEntity<GenericResponse<List<CourseResponse>>> searchByTitle(@PathVariable("title") String title) {
+        var course = courseService.searchByTitle(title);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                GenericResponse.response( course,"Success", true)
+        ); // Returning null as there's no data
+    }
 }

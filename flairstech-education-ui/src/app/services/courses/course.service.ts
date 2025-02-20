@@ -10,7 +10,10 @@ import { enviroment } from '../../enviroments/enviroment';
   providedIn: 'root',
 })
 export class CourseService {
-  constructor(private HttpClient: HttpClient) {}
+  course: string;
+  constructor(private HttpClient: HttpClient) {
+    this.course = '/courses';
+  }
 
   getAll(page: number, size: number): Observable<IPageResponse<ICourse>> {
     return this.HttpClient.get<IPageResponse<ICourse>>(
@@ -33,6 +36,12 @@ export class CourseService {
   getById(id: number): Observable<IGenericResponse<ICourse>> {
     return this.HttpClient.get<IGenericResponse<ICourse>>(
       `${enviroment.baseUrl}/courses/${id}`
+    );
+  }
+  getByTitle(title: string): Observable<IGenericResponse<ICourse[]>> {
+    console.log(`${enviroment.baseUrl + this.course}` + `/search/${title}`);
+    return this.HttpClient.get<IGenericResponse<ICourse[]>>(
+      enviroment.baseUrl + this.course + `/search/${title}`
     );
   }
   delete(id: number): Observable<IGenericResponse<boolean>> {

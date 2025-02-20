@@ -2,6 +2,9 @@ package com.flairstech_education.course;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CourseMapper {
     public CourseResponse toCourseResponse(Course course){
@@ -16,6 +19,14 @@ public class CourseMapper {
                 .createdBy(course.getCreatedBy())
                 .build();
     }
+//    public List<CourseResponse> toCourseResponseList(Course[] courses){
+//        List<CourseResponse> list = new ArrayList<>();
+//        for(Course c : courses){
+//            list.add(toCourseResponse(c));
+//        }
+//        return list;
+//    }
+
 
     public Course toCourse(CourseRequest courseRequest) {
         return Course.builder()
