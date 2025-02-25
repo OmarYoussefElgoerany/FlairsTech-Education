@@ -34,6 +34,7 @@ public class GlobalExceptionHandler {
                 );
 
     }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ExceptionResponse> Exception(EntityNotFoundException exception) {
         return ResponseEntity

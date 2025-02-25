@@ -1,4 +1,3 @@
-import { CourseService } from './../services/courses/course.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
@@ -8,7 +7,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ICourse } from '../models/ICourse';
+import { ICourse } from '../../models/ICourse';
+import { CourseService } from '../../services/courses/course.service';
 
 @Component({
   selector: 'app-course-form',

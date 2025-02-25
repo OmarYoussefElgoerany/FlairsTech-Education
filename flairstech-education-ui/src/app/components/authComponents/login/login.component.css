@@ -1,0 +1,6 @@
+.construct {
+  width: 75%;
+  margin: auto; /* Horizontally center the element */
+  display: flex;
+  justify-content: center;
+}

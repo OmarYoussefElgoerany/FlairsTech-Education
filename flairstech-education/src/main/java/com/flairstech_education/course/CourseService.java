@@ -60,6 +60,12 @@ public class CourseService {
         Course course = courseMapper.toCourse(courseRequest);
         return courseRepository.save(course).getId();
     }
+    public int saveFileToCourse(String filePath, Integer courseId){
+        var course =  courseRepository.findById(courseId)
+                .orElseThrow(() ->  new EntityNotFoundException("Course not found with id: " + courseId));
+        course.setPhoto(filePath);
+        return courseRepository.save(course).getId();
+    }
     public int update(CourseRequest courseRequest){
         var id = courseRequest.id();
         Course getCourse = courseRepository.findById(id).orElseThrow(

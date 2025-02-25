@@ -1,6 +1,3 @@
-import { routes } from './../app.routes';
-import { CourseService } from '../services/courses/course.service';
-import { ICourse } from './../models/ICourse';
 import {
   ChangeDetectorRef,
   Component,
@@ -12,6 +9,8 @@ import { PaginatorComponent } from '../paginator/paginator.component';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ICourse } from '../../models/ICourse';
+import { CourseService } from '../../services/courses/course.service';
 
 @Component({
   selector: 'app-course',

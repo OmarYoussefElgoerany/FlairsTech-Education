@@ -1,0 +1,118 @@
+<div class="m-5">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="w-75 m-auto">
+      <h2 class="w-75 d-flex justify-content-center m-auto">Register</h2>
+
+      <!-- First Name -->
+      <div class="mb-3">
+        <label class="form-label">First Name</label>
+        <input type="text" class="form-control" formControlName="firstname" />
+        <p class="text-danger" *ngIf="firstname?.invalid && firstname?.touched">
+          <span *ngIf="firstname?.errors?.['required']"
+            >First name is required.</span
+          >
+        </p>
+      </div>
+
+      <!-- Last Name -->
+      <div class="mb-3">
+        <label class="form-label">Last Name</label>
+        <input type="text" class="form-control" formControlName="lastname" />
+        <p class="text-danger" *ngIf="lastname?.invalid && lastname?.touched">
+          <span *ngIf="lastname?.errors?.['required']"
+            >Last name is required.</span
+          >
+        </p>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email" />
+        <p class="text-danger" *ngIf="email?.invalid && email?.touched">
+          <span *ngIf="email?.errors?.['required']">Email is required.</span>
+          <span *ngIf="email?.errors?.['email']">Enter a valid email.</span>
+        </p>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+        />
+        <p class="text-danger" *ngIf="password?.invalid && password?.touched">
+          <span *ngIf="password?.errors?.['required']"
+            >Password is required.</span
+          >
+          <span *ngIf="password?.errors?.['minlength']">
+            Must be at least
+            {{ password?.errors?.['minlength']?.['requiredLength'] }}
+            characters.
+          </span>
+        </p>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="confirmPassword"
+        />
+
+        @if (confirmPassword?.touched || registerForm.errors?.['mustMatch']) {
+        <p class="text-danger">
+          @if (confirmPassword?.errors?.['required']) {
+          <span>Confirm password is required.</span>
+          } @if (registerForm.errors?.['mustMatch']) {
+          <span>Passwords do not match.</span>
+          }
+        </p>
+        }
+      </div>
+
+      <!-- Role -->
+      <div class="mb-3">
+        <label class="form-label">Role</label>
+        <select class="form-select" formControlName="role">
+          <option value="">Select a role</option>
+          <option value="USER">User</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+        <p class="text-danger" *ngIf="role?.invalid && role?.touched">
+          <span *ngIf="role?.errors?.['required']">Role is required.</span>
+        </p>
+      </div>
+
+      <!-- Error Message (Angular 17+ `@if` directive) -->
+      @if (registrationFailed) {
+      <div class="alert alert-danger text-center p-2">
+        Registration failed. Please try again.
+      </div>
+      } @if (alreadyExist) {
+      <div class="alert alert-danger text-center p-2">
+        Registration failed. This Email Already Exist.
+      </div>
+      }
+
+      <!-- Register Button -->
+      <div class="d-flex justify-content-center">
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid"
+          class="btn btn-primary"
+        >
+          Register
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Debugging: Display form values and errors -->
+  <pre>{{ registerForm.value | json }}</pre>
+  <pre>{{         registerForm.errors?.['mustMatch']|json }}</pre>
+</div>

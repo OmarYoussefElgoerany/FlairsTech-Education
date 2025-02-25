@@ -1,0 +1,52 @@
+<div class="m-5">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <!-- Email -->
+    <div class="w-75 m-auto">
+      <h2 class="w-75 d-flex justify-content-center m-auto">Login</h2>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email" />
+        <p class="text-danger" *ngIf="email?.invalid && email?.touched">
+          <span *ngIf="email?.errors?.['required']">Email is required.</span>
+          <span *ngIf="email?.errors?.['email']">Enter a valid email.</span>
+        </p>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          formControlName="password"
+        />
+        <p class="text-danger" *ngIf="password?.invalid && password?.touched">
+          <span *ngIf="password?.errors?.['required']"
+            >Password is required.</span
+          >
+          <span *ngIf="password?.errors?.['minlength']">
+            Must be at least
+            {{ password?.errors?.['minlength']?.['requiredLength'] }}
+            characters.
+          </span>
+        </p>
+      </div>
+      @if(notExist){
+
+      <div class="bg-danger">Please try Again this account doesnt exist</div>
+      }
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="btn btn-primary"
+      >
+        Login
+      </button>
+    </div>
+  </form>
+
+  <pre>{{ loginForm.value | json }}</pre>
+</div>
