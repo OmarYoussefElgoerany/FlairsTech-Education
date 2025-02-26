@@ -1,8 +1,6 @@
 package com.flairstech_education.user;
 
 import com.flairstech_education.common.PageResponse;
-import com.flairstech_education.course.Course;
-import com.flairstech_education.course.CourseResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

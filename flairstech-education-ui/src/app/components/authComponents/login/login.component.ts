@@ -9,6 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ILoginRequest } from '../../../models/authModels/ILoginRequest';
 import { CommonModule } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -47,11 +48,14 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password');
   }
   loginApi() {
+    let x = this.loginForm.value as ILoginRequest;
+
     this.authServ.login(this.loginForm.value as ILoginRequest).subscribe({
       next: (res) => {
-        this.router.navigateByUrl('/home');
-        this.notExist = false;
         this.authServ.setAuthToken(res.token);
+        this.notExist = false;
+        this.router.navigateByUrl('/home');
+
         console.log(res.token);
       },
       error: (err) => {

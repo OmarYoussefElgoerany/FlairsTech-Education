@@ -1,9 +1,10 @@
 package com.flairstech_education.course;
 
 import com.flairstech_education.common.BaseEntity;
-import com.flairstech_education.user.User;
+import com.flairstech_education.userCourse.UserCourse;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,9 @@ public class Course extends BaseEntity {
     private String category;
     private int capacity;
     private String photo;
-
-    @ManyToMany(mappedBy = "courses") // Non-owning side
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserCourse> userCourses = new HashSet<>();
+//
+//    @ManyToMany(mappedBy = "courses") // Non-owning side
+//    private Set<User> users = new HashSet<>();
 }

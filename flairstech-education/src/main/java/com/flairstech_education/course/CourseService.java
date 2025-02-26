@@ -1,11 +1,16 @@
 package com.flairstech_education.course;
 
 import com.flairstech_education.common.PageResponse;
+import com.flairstech_education.user.User;
+import com.flairstech_education.userCourse.UserCourse;
+import com.flairstech_education.userCourse.UserCourseId;
+import com.flairstech_education.userCourse.UserCourseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +20,12 @@ import java.util.stream.Collectors;
 public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
-    public CourseService(CourseRepository courseRepository, CourseMapper courseMapper){
+    private final UserCourseRepository userCourseRepository;
+    public CourseService(CourseRepository courseRepository, CourseMapper courseMapper,
+                         UserCourseRepository userCourseRepository){
         this.courseRepository = courseRepository;
         this.courseMapper = courseMapper;
+        this.userCourseRepository = userCourseRepository;
     }
 
 //    public List<CourseResponse> getAll(){
@@ -56,9 +64,20 @@ public class CourseService {
                 .map(courseMapper::toCourseResponse)
                 .orElseThrow(() ->  new EntityNotFoundException("Course not found with id: " + id));
     }
-    public int create(CourseRequest courseRequest){
+    public int create(CourseRequest courseRequest, Authentication connectedUser ){
+        User usr = (User) connectedUser.getPrincipal();
+
         Course course = courseMapper.toCourse(courseRequest);
-        return courseRepository.save(course).getId();
+
+        int courseId = courseRepository.save(course).getId();
+        var compositeId = new UserCourseId(usr.getId(),courseId);
+        UserCourse userCourse = new UserCourse();
+        userCourse.setId(compositeId);
+        userCourse.setUser(usr);
+        userCourse.setCourse(course);
+        userCourse.setCreatedBy(courseRequest.createdBy());
+        userCourseRepository.save(userCourse);
+        return courseId;
     }
     public int saveFileToCourse(String filePath, Integer courseId){
         var course =  courseRepository.findById(courseId)

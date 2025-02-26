@@ -1,9 +1,9 @@
 package com.flairstech_education.user;
 
 import com.flairstech_education.common.BaseEntity;
-import com.flairstech_education.course.Course;
 import com.flairstech_education.role.Role;
 import com.flairstech_education.token.Token;
+import com.flairstech_education.userCourse.UserCourse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,13 +49,16 @@ public class User  extends BaseEntity implements UserDetails , Principal {
     private List<Role> roles;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Token> tokens = new HashSet<>();
-    @ManyToMany
-            @JoinTable(
-                    name = "user_courses",
-                    joinColumns = @JoinColumn(name = "course_Id"),
-                    inverseJoinColumns = @JoinColumn(name = "user_Id")
-            )
-    private Set<Course> courses = new HashSet<>();
+//    @ManyToMany
+//            @JoinTable(
+//                    name = "user_courses",
+//                    joinColumns = @JoinColumn(name = "course_Id"),
+//                    inverseJoinColumns = @JoinColumn(name = "user_Id")
+//            )
+//    private Set<Course> courses = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserCourse> userCourses = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

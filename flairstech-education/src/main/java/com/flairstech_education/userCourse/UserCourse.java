@@ -1,15 +1,19 @@
 package com.flairstech_education.userCourse;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Table;
+import com.flairstech_education.course.Course;
+import com.flairstech_education.user.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,9 +35,6 @@ public class UserCourse {
     @MapsId("courseId")
     @JoinColumn(name = "course_id")
     private Course course;
-
-    // Additional fields (if needed)
-    private LocalDateTime enrolledAt;
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
@@ -49,4 +50,5 @@ public class UserCourse {
     @LastModifiedBy
     @Column(insertable = false)
     private String lastModifiedBy;
+
 }

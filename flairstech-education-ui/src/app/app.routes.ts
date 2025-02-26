@@ -13,17 +13,19 @@ export const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full',
   },
-  { path: 'home', component: HomeComponent },
+  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'courses', component: CourseComponent },
+  { path: 'courses', component: CourseComponent, canActivate: [authGuard] },
   {
     path: 'addCourse',
     component: CourseFormComponent,
+    canActivate: [authGuard],
   },
   {
     path: 'editCourse/:id',
     component: CourseFormComponent,
+    canActivate: [authGuard],
   },
   // {
   //   path: '',

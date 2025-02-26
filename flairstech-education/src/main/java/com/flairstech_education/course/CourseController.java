@@ -3,9 +3,9 @@ package com.flairstech_education.course;
 import com.flairstech_education.common.GenericResponse;
 import com.flairstech_education.common.PageResponse;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,8 +42,9 @@ public class CourseController {
                     .body(courseService.getAll(page,size));
     }
     @PostMapping
-    public ResponseEntity<GenericResponse<Integer>> create(@RequestBody  @Valid CourseRequest courseRequest) {
-        int courseId = courseService.create(courseRequest);
+    public ResponseEntity<GenericResponse<Integer>> create(@RequestBody  @Valid CourseRequest courseRequest
+     ,Authentication connectedUser) {
+        int courseId = courseService.create(courseRequest,connectedUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(GenericResponse.success(courseId));
     }
     
