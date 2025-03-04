@@ -33,14 +33,14 @@
       </div>
       @if(notExist){
 
-      <div class="bg-danger">Please try Again this account doesnt exist</div>
+      <div class="bg-danger">Invalid email or password, Please try Again</div>
       }
     </div>
 
     <div class="d-flex justify-content-center">
       <button
         type="submit"
-        [disabled]="loginForm.invalid"
+        [disabled]="loginForm.invalid || disable"
         class="btn btn-primary"
       >
         Login

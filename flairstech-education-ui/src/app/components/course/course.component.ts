@@ -1,25 +1,33 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ICourse } from '../../models/ICourse';
 import { CourseService } from '../../services/courses/course.service';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
+import { of, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-course',
   standalone: true,
-  imports: [PaginatorComponent, CommonModule, RouterLink, FormsModule],
+  imports: [
+    PaginatorComponent,
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './course.component.html',
   styleUrl: './course.component.css',
 })
-export class CourseComponent implements OnInit, OnChanges {
+export class CourseComponent implements OnInit, OnDestroy {
   courses!: ICourse[];
   page: number = 0; // page index
   size: number = 5; // page size
@@ -27,22 +35,40 @@ export class CourseComponent implements OnInit, OnChanges {
   totalCourses!: number;
   courseId!: number;
   searchingVal!: string;
-  constructor(private courseService: CourseService, private router: Router) {}
-  ngOnChanges(changes: SimpleChanges): void {
-    this.courses.filter((course) => this.courseId != course.id);
+  cachedList!: ICourse[];
+  formControl: FormControl;
+  private destroy$: Subject<void>;
+  intervalId: any;
+  constructor(private courseService: CourseService, private router: Router) {
+    this.formControl = new FormControl('');
+    this.destroy$ = new Subject<void>();
   }
 
   ngOnInit(): void {
     this.fetchCourses();
-  }
-  search() {
-    console.log(this.searchingVal);
-    this.courseService.getByTitle(this.searchingVal).subscribe({
-      next: (resp) => {
-        this.courses = resp.data;
-      },
-      error: (err) => console.error(`Error Message : ` + err.message``),
-    });
+    this.formControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap((val) =>
+          this.courseService.getByTitle((val as string) || '').pipe(
+            catchError((err) => {
+              if (!val) {
+                return of({ data: this.cachedList });
+              }
+              return of({ data: [] });
+            })
+          )
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (resp) => {
+          this.courses = resp.data;
+          console.log(`Sucess Response data:` + resp.data);
+        },
+        error: (err) => console.log(`ERROR HAPPEN IN API ${err.message}`),
+      });
   }
 
   fetchCourses(): void {
@@ -55,6 +81,7 @@ export class CourseComponent implements OnInit, OnChanges {
         this.totalPages = courses.totalPages;
         this.totalCourses = courses.totalElements; // Assuming the API provides total count
         this.totalPages = Math.ceil(this.totalCourses / this.size);
+        this.cachedList = courses.content;
       },
       error: (error) => {
         console.error('API Error:', error);
@@ -67,9 +94,25 @@ export class CourseComponent implements OnInit, OnChanges {
       next: (resp) => {
         console.log(resp.message);
         this.courses = this.courses.filter((course) => course.id != id);
+        if (this.courses.length === 0) {
+          this.loadNextPage();
+        }
+        console.log('Next');
       },
 
       error: (error: Error) => console.error(`resp : ${error.message}`),
+    });
+  }
+  loadNextPage() {
+    if (this.page != 0) {
+      this.page++; // Increment the page
+      this.totalPages = this.courses.length;
+    }
+    this.courseService.getAll(this.page, this.size).subscribe({
+      next: (newCourses) => {
+        this.courses = newCourses.content;
+      },
+      error: (err) => console.error('Error fetching next page:', err),
     });
   }
   handlePagination($event: {
@@ -85,5 +128,9 @@ export class CourseComponent implements OnInit, OnChanges {
     this.totalPages = $event.length;
 
     this.fetchCourses();
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

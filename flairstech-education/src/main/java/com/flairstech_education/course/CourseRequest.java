@@ -1,7 +1,6 @@
 package com.flairstech_education.course;
 
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 
@@ -19,7 +18,7 @@ public record CourseRequest(
         @NotEmpty(message = "instructor Cannot be empty")
         String instructor,
         @Min(value = 1, message = "Duration must be at least 1")
-        @Max(value = 120, message = "Duration cannot exceed 120")
+        @Max(value = 120, message = "Duration cannot exceed 120h")
         int duration,
         LocalDate startDate,
         LocalDate endDate,

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -9,6 +9,9 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { ICourse } from '../../models/ICourse';
 import { CourseService } from '../../services/courses/course.service';
+import { DialogElement } from '../dialog/dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { SuccessDialogComponent } from '../success-dialog/success-dialog.component';
 
 @Component({
   selector: 'app-course-form',
@@ -21,13 +24,19 @@ export class CourseFormComponent implements OnInit {
   courseForm!: FormGroup;
   isEditMode: boolean;
   courseId!: number;
+  isSuceess: boolean;
+  error: boolean;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private courseService: CourseService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog
   ) {
     this.isEditMode = false;
+    this.isSuceess = false;
+    this.error = false;
   }
 
   ngOnInit(): void {
@@ -94,7 +103,15 @@ export class CourseFormComponent implements OnInit {
           Validators.maxLength(30),
         ],
       ],
-      duration: ['', [Validators.required, Validators.min(1)]],
+      duration: [
+        '',
+        [
+          Validators.required,
+          Validators.min(1),
+          Validators.max(120),
+          Validators.pattern(/^1\d{0,2}$/), // Must start with '1' and have up to 3 digits
+        ],
+      ],
     });
   }
 
@@ -129,24 +146,57 @@ export class CourseFormComponent implements OnInit {
         updateCourse.id = this.courseId;
         console.log(updateCourse);
         this.courseService.update(updateCourse).subscribe({
-          next: (resp) =>
-            console.log(`${resp.message} course id : ` + resp.data),
-          error: (error: Error) =>
-            console.error(`Failed to update ` + error.message),
+          next: (resp) => {
+            this.isSuceess = true;
+            this.openDialog('Success', 'Form submitted successfully!', true);
+          },
+          error: (err: ErrorEvent) => {
+            console.error(`Failed to update ` + err.error);
+
+            console.error(`Failed to update ` + err.error.validationErrors[0]);
+            this.openDialog(
+              'Error',
+              `Form submission failed Check ${err.error.validationErrors[0]}. Please try again.`,
+
+              false
+            );
+          },
         });
       } else {
-        console.log(this.isEditMode + `edit t or f `);
         this.courseService.create(this.courseForm.value as ICourse).subscribe({
-          next: (resp) => console.log(`Created Succesfully` + resp.message),
-          error: (err: Error) => {
+          next: (resp) => {
+            this.openDialog('Success', 'Form submitted successfully!', true);
+            this.isSuceess = true;
+          },
+          error: (err: ErrorEvent) => {
             console.log(this.courseForm.value as ICourse);
-            console.error(err.message);
+            this.openDialog(
+              'Error',
+              `Form submission failed Check ${err.error.validationErrors[0]}. Please try again.`,
+
+              false
+            );
           },
         });
       }
-      //this.router.navigateByUrl('/home');
     } else {
-      console.log('Form is invalid');
     }
+  }
+
+  openDialog(title: string, message: string, isSuccess: boolean) {
+    const dialogRef = this.dialog.open(SuccessDialogComponent, {
+      width: '300px',
+      data: { title, message },
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      if (isSuccess && this.isEditMode) {
+        this.router.navigate(['/courses']); // Navigate on success
+      } else if (isSuccess) {
+        this.courseForm.reset();
+      } else {
+        this.error = true;
+      }
+    });
   }
 }

@@ -1,7 +1,6 @@
 package com.flairstech_education.auth;
 
 import com.flairstech_education.common.GenericResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +32,8 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ) {
-        return ResponseEntity.ok(service.authenticate(request));
+        var  x = service.authenticate(request);
+        return ResponseEntity.ok(x);
     }
 
 

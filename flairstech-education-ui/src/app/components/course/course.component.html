@@ -1,13 +1,9 @@
 <div class="row my-5 construct border border-danger">
   <div class="m-1">
     <div class="input-group flex-nowrap">
-      <button (click)="search()" class="input-group-text" id="addon-wrapping">
-        Search
-      </button>
+      <button class="input-group-text" id="addon-wrapping">Search</button>
       <input
-        [(ngModel)]="searchingVal"
-        (keydown.enter)="search()"
-        #searchVal
+        [formControl]="formControl"
         type="text"
         class="form-control"
         placeholder="Course Name"

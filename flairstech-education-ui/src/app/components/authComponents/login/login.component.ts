@@ -20,13 +20,16 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  notExist: boolean = false;
-
+  notExist: boolean;
+  disable: boolean;
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authServ: AuthService
-  ) {}
+  ) {
+    this.notExist = false;
+    this.disable = false;
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -55,11 +58,13 @@ export class LoginComponent implements OnInit {
         this.authServ.setAuthToken(res.token);
         this.notExist = false;
         this.router.navigateByUrl('/home');
-
+        this.disable = true;
         console.log(res.token);
       },
-      error: (err) => {
+      error: (err: ErrorEvent) => {
+        console.log(`ERRRORR` + err.error.error);
         this.notExist = true;
+        this.disable = false;
         console.error(err.message);
       },
     });
@@ -67,6 +72,7 @@ export class LoginComponent implements OnInit {
   // ✅ Submit method
   onSubmit() {
     if (this.loginForm.valid) {
+      this.disable = true;
       console.log('Logging in...', this.loginForm.value);
       this.loginApi();
     } else {

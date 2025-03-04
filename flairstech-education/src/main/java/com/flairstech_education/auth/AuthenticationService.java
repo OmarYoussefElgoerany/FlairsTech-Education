@@ -1,5 +1,6 @@
 package com.flairstech_education.auth;
 
+import com.flairstech_education.exception.InvalidCredentialsException;
 import com.flairstech_education.role.RoleRepository;
 import com.flairstech_education.security.JwtService;
 import com.flairstech_education.token.Token;
@@ -7,10 +8,13 @@ import com.flairstech_education.token.TokenRepository;
 import com.flairstech_education.user.User;
 import com.flairstech_education.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,23 +53,32 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        try {
+            var auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
 
-        var claims = new HashMap<String, Object>();
-        var user = ((User) auth.getPrincipal());
-        claims.put("fullName", user.fullName());
 
-        var jwtToken = jwtService.generateToken(claims, (User) auth.getPrincipal());
-        var token = tokenRepository.save(Token.builder()
-                .token(jwtToken).user(user).build());
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+            var claims = new HashMap<String, Object>();
+            var user = ((User) auth.getPrincipal());
+            claims.put("fullName", user.fullName());
+
+            var jwtToken = jwtService.generateToken(claims, (User) auth.getPrincipal());
+            var token = tokenRepository.save(Token.builder()
+                    .token(jwtToken).user(user).build());
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        }
+        catch (BadCredentialsException e) {
+            throw new InvalidCredentialsException("Invalid email or password");
+        } catch (Exception e) {
+            e.printStackTrace(); // Log the exact exception
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error occurred", e);
+        }
     }
 
 //    @Transactional

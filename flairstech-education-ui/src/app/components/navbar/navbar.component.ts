@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 
@@ -8,18 +8,19 @@ import { AuthService } from '../../services/auth/auth.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css',
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   isLoggedIn!: boolean;
   constructor(private auth: AuthService) {
-    this.isLoggedIn = true;
+    this.isLoggedIn = false;
   }
-  logOut() {
-    this.auth.logOut();
-
+  ngOnInit(): void {
     this.auth.userLoggedIn$.subscribe({
       next: (val) => {
         this.isLoggedIn = val;
       },
     });
+  }
+  logOut() {
+    this.auth.logOut();
   }
 }

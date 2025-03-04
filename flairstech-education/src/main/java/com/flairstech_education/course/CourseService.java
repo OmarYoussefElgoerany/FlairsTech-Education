@@ -116,7 +116,7 @@ public class CourseService {
         List<Course> courses = this.courseRepository.findByTitleContainingIgnoreCase(title);
 
         if (courses.isEmpty()) {
-            throw new EntityNotFoundException("Course with title " + title + " is not found");
+                            throw new EntityNotFoundException("Course with title " + title + " is not found");
         }
 
         return courses.stream()

@@ -1,13 +1,14 @@
 package com.flairstech_education.handler;
 
+import com.flairstech_education.exception.InvalidCredentialsException;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpServerErrorException.InternalServerError;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +16,8 @@ import java.util.Set;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> methodNotValidException(MethodArgumentNotValidException exp){
         Set<String> errors = new HashSet<>();
@@ -46,6 +49,19 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ExceptionResponse> InvalidCredentialsException(InvalidCredentialsException exception) {
+        logger.error("Handling InvalidCredentialsException: {}", exception.getMessage()); // Debugging
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exception.getMessage())
+                                .businessErrorDescription("Invalid email or password")
+                                .build()
+                );
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> Exception(Exception exception) {
         return ResponseEntity
@@ -57,5 +73,4 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
-
 }
